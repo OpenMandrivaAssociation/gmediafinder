@@ -4,12 +4,13 @@
 
 Name:		gmediafinder
 Version:	0.9.9.1
-Release:	%mkrel 1
+Release:	%mkrel 2
 Summary:	Application to search, stream and/or download files from YouTube
 License:	GPLv2
 Group:		Video
 URL:		http://gnomefiles.org/content/show.php/Gmediafinder?content=138588&PHPSESSID=9c909890a42ce1ac7a555efab2b34b83
 Source0:	http://github.com/smolleyes/gmediafinder.git/gmediafinder-%{version}.tar.bz2
+Patch0:		gmediafinder-ru.patch
 BuildArch:	noarch
 BuildRequires:	python-mechanize
 BuildRequires:	python-setuptools
@@ -40,6 +41,7 @@ mp4 format for video searching! (and lower cpu usage compared to flv...).
 
 %prep
 %setup -q -n %{name}
+%patch0 -p1 -b .ru~
 %__chmod 644 CHANGELOG gpl-2.0.txt README VERSION
 
 %build
