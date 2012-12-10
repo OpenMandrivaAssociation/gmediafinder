@@ -1,69 +1,88 @@
-#######################################################
-# This spec is based on Falticska Florin's work for MRB
-#######################################################
+#Obtaining source
+#git clone git://github.com/smolleyes/gmediafinder.git  && tar cjf gmediafinder-{_version}.tar.bz2 gmediafinder/ && rm -rf gmediafinder
+%define debug_package	%{nil}
+Name:			gmediafinder
+Version:		1.0.4
+Release:		1
+Summary:		Stream and/or download and/or convert files
+License:		GPLv2
+Group:			Video
+URL:			http://gnomefiles.org/content/show.php/Gmediafinder?content=138588&PHPSESSID=9c909890a42ce1ac7a555efab2b34b83
+Source0:		https://nodeload.github.com/smolleyes/gmediafinder2/%{name}-%{version}.tar.gz
+BuildRequires:		hicolor-icon-theme
+BuildRequires:		python-mechanize
+BuildRequires:		python-setuptools
+BuildRequires:		python-distutils-extra
+BuildRequires:		intltool
+BuildRequires:		python-gdata
+BuildRequires:		python-configobj
+BuildRequires:		gettext
+BuildRequires:		desktop-file-utils
 
-Name:		gmediafinder
-Version:	0.9.9.1
-Release:	%mkrel 2
-Summary:	Application to search, stream and/or download files from YouTube
-License:	GPLv2
-Group:		Video
-URL:		http://gnomefiles.org/content/show.php/Gmediafinder?content=138588&PHPSESSID=9c909890a42ce1ac7a555efab2b34b83
-Source0:	http://github.com/smolleyes/gmediafinder.git/gmediafinder-%{version}.tar.bz2
-Patch0:		gmediafinder-ru.patch
-BuildArch:	noarch
-BuildRequires:	python-mechanize
-BuildRequires:	python-setuptools
-BuildRequires:	python-distutils-extra
-BuildRequires:	intltool
-Requires:	python-beautifulsoup
-Requires:	python-html5lib
-Requires:	gstreamer0.10-python
-Requires:	gstreamer0.10-ffmpeg
-Requires:	python-gdata
-Requires:	pygtk2.0
-Requires:	pygtk2.0-libglade
-Requires:	python-mechanize
-Requires:	ffmpeg
-Requires:	python-xlib
-Requires:	gstreamer0.10-tools
-Requires:	gstreamer0.10-libvisual
-Requires:	libvisual-plugins
-Requires:	python-configobj
+Requires:		gnome-icon-theme
+Requires:		pythonegg(html5lib)
+Requires:		gstreamer0.10-python
+Requires:		gstreamer0.10-ffmpeg
+Requires:		gstreamer0.10-plugins-good
+Requires:		python-gdata
+Requires:		pygtk2.0
+Requires:		python-mechanize
+Requires:		libffmpeg
+Requires:		pythonegg(python-xlib)
+Requires:		pkgconfig(pywebkitgtk-1.0)
+Requires:		gstreamer0.10-tools
+Requires:		%{_lib}avutil50
+Requires:		gstreamer0.10-libvisual
+Requires:		libvisual-plugins
+Requires:		python-configobj
+Requires:		pygtk2.0-libglade
+BuildArch:		noarch
 
 %description
-Gmediafinder is a software to search stream an/or download files form YouTube
-without Flash, Google and some mp3 search engines (you know the rules...).
-It supports fullscreen mode, visualisation and uses the gstreamer engine
-for YouTube. You can select prefered resolution and give the priority to
-mp4 format for video searching! (and lower cpu usage compared to flv...).
+Gmediafinder is a software to search stream an/or download files 
+form you-tube without flash,
+Google and some mp3 search-engines (you know the rules...)
+its support full-screen mode, visualization and use the gstreamer engine
+for you-tube you can select your preferred, resolution and give priority to 
+mp4 format for video seeking! (and lower CPU usage than flv...).
 
 
 %prep
-%setup -q -n %{name}
-%patch0 -p1 -b .ru~
-%__chmod 644 CHANGELOG gpl-2.0.txt README VERSION
+%setup -q
 
 %build
-%__python setup.py build
+python setup.py build
 
 %install
-%__rm -rf %{buildroot}
-
 %__python setup.py install --root=%{buildroot}
-%__cp data/img/throbber.png %{buildroot}%{_datadir}/%{name}/
-%__sed -i s,"AudioVideo","AudioVideo;",g %{buildroot}%{_datadir}/applications/%{name}.desktop
+cp -R data/img/throbber.png %{buildroot}%{_datadir}/%{name}/
 %__chmod 644 %{buildroot}%{_datadir}/applications/%{name}.desktop
 %__chmod 644 %{buildroot}%{_datadir}/%{name}/*.png
 %__chmod 644 %{buildroot}%{_datadir}/%{name}/*/*
+%__chmod a+x %{buildroot}%{_datadir}/pyshared/GmediaFinder/lib/engines/__init__.py
+%__chmod a+x %{buildroot}%{_datadir}/pyshared/GmediaFinder/__init__.py
+%__chmod a+x %{buildroot}%{_datadir}/pyshared/GmediaFinder/lib/__init__.py
+
+%__chmod a+x %{buildroot}%{py_sitedir}/GmediaFinder/lib/Translation.py
+%__chmod a+x %{buildroot}%{py_sitedir}/GmediaFinder/__init__.py
+%__chmod a+x %{buildroot}%{py_sitedir}/GmediaFinder/lib/engines/__init__.py
+%__chmod a+x %{buildroot}%{py_sitedir}/GmediaFinder/lib/downloads/__init__.py
+%__chmod a+x %{buildroot}%{py_sitedir}/GmediaFinder/lib/__init__.py
+%__chmod a+x %{buildroot}%{py_sitedir}/GmediaFinder/lib/player/__init__.py
+%__chmod a+x %{buildroot}%{py_sitedir}/GmediaFinder/lib/engines/main.py
+%__chmod a+x %{buildroot}%{py_sitedir}/GmediaFinder/lib/get_stream.py
+%__chmod a+x %{buildroot}%{py_sitedir}/GmediaFinder/gmediafinder.py
+%__chmod a+x %{buildroot}%{py_sitedir}/GmediaFinder/lib/pykey.py
+%__chmod a+x %{buildroot}%{py_sitedir}/GmediaFinder/lib/checklinks.py
+%__chmod a+x %{buildroot}%{_datadir}/gmediafinder/scripts/get_stream.py 
+
+
+desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 %find_lang %{name}
 
-%clean
-%__rm -rf %{buildroot}
-
 %files -f %{name}.lang
-%defattr(-,root,root,-)
+
 %doc CHANGELOG gpl-2.0.txt README VERSION
 %{_bindir}/*
 %{_datadir}/applications/%{name}.desktop
