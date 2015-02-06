@@ -3,7 +3,7 @@
 %define debug_package	%{nil}
 Name:			gmediafinder
 Version:		1.0.4
-Release:		1
+Release:		2
 Summary:		Stream and/or download and/or convert files
 License:		GPLv2
 Group:			Video
